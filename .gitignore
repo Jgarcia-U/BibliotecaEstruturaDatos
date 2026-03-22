@@ -1,0 +1,4 @@
+# Carpetas de ejecución y caché de Python
+frontend/__pycache__/
+backend/__pycache__/
+__pycache__/
