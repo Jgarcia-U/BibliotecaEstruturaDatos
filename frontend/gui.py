@@ -134,7 +134,7 @@ class BibliotecaGUI:
 
         # Mostrar libros
         for libro in libros:
-            estado = "Disponible" if libro["disponible"] else f"Prestado a {libro['usuario_actual']} ❌"
+            estado = "Disponible" if libro["disponible"] else f"Prestado a {libro['usuario_actual']}"
 
             tk.Label(content, text=f"ID: {libro['id']}").pack(anchor="w")
             tk.Label(content, text=f"Título: {libro['titulo']}").pack(anchor="w")
