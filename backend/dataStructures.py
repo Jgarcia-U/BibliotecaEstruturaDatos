@@ -4,5 +4,5 @@ from collections import deque
 libros = []
 usuarios = []
 
-historial_prestamos = []      # PILA
-lista_espera = deque()        # COLA
+historialPrestamos = []      # PILA
+listaEspera = deque()        # COLA

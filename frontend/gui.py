@@ -1,12 +1,12 @@
 import tkinter as tk
 from tkinter import messagebox
 
-from backend.library_logic import (
-    agregar_libro_backend,
-    agregar_usuario_backend,
-    prestar_libro_backend,
-    devolver_libro_backend,
-    historial_prestamos
+from backend.libraryLogic import (
+    agregarLibroBackend,
+    agregarUsuarioBackend,
+    prestarLibroBackend,
+    devolverLibroBackend,
+    historialPrestamos
 )
 
 class BibliotecaGUI:
@@ -18,21 +18,21 @@ class BibliotecaGUI:
 
         tk.Label(root, text="SISTEMA DE BIBLIOTECA", font=("Arial", 16)).pack(pady=10)
 
-        tk.Button(root, text="Agregar Libro", width=25, command=self.ventana_agregar_libro).pack(pady=5)
-        tk.Button(root, text="Agregar Usuario", width=25, command=self.ventana_agregar_usuario).pack(pady=5)
-        tk.Button(root, text="Prestar Libro", width=25, command=self.ventana_prestar_libro).pack(pady=5)
-        tk.Button(root, text="Devolver Libro", width=25, command=self.ventana_devolver_libro).pack(pady=5)
-        tk.Button(root, text="Ver historial", width=25, command=self.ver_historial).pack(pady=5)
-        tk.Button(root, text="Ver libros", width=25, command=self.ver_libros).pack(pady=5)
+        tk.Button(root, text="Agregar Libro", width=25, command=self.ventanaAgregarLibro).pack(pady=5)
+        tk.Button(root, text="Agregar Usuario", width=25, command=self.ventanaAgregarUsuario).pack(pady=5)
+        tk.Button(root, text="Prestar Libro", width=25, command=self.ventanaPrestarLibro).pack(pady=5)
+        tk.Button(root, text="Devolver Libro", width=25, command=self.ventanaDevolverLibro).pack(pady=5)
+        tk.Button(root, text="Ver historial", width=25, command=self.verHistorial).pack(pady=5)
+        tk.Button(root, text="Ver libros", width=25, command=self.verLibros).pack(pady=5)
 
     # Ventanas de formularios
-    def ventana_agregar_libro(self):
+    def ventanaAgregarLibro(self):
         win = tk.Toplevel()
         win.title("Agregar Libro")
 
         tk.Label(win, text="ID del libro").pack()
-        id_libro = tk.Entry(win)
-        id_libro.pack()
+        idLibro = tk.Entry(win)
+        idLibro.pack()
 
         tk.Label(win, text="Título").pack()
         titulo = tk.Entry(win)
@@ -43,70 +43,78 @@ class BibliotecaGUI:
         autor.pack()
 
         def guardar():
-            agregar_libro_backend(id_libro.get(), titulo.get(), autor.get())
-            messagebox.showinfo("Éxito", "Libro agregado")
-            win.destroy()
+            msg = agregarLibroBackend(idLibro.get(), titulo.get(), autor.get())
 
+            if msg is None:
+                messagebox.showinfo("Éxito", "Libro agregado correctamente.")
+                win.destroy()
+            else:
+                messagebox.showerror("Error", msg)
+        
         tk.Button(win, text="Guardar", command=guardar).pack()
 
-    def ventana_agregar_usuario(self):
+    def ventanaAgregarUsuario(self):
         win = tk.Toplevel()
         win.title("Agregar Usuario")
 
         tk.Label(win, text="ID del usuario").pack()
-        id_usuario = tk.Entry(win)
-        id_usuario.pack()
+        idUsuario = tk.Entry(win)
+        idUsuario.pack()
 
         tk.Label(win, text="Nombre").pack()
         nombre = tk.Entry(win)
         nombre.pack()
 
         def guardar():
-            agregar_usuario_backend(id_usuario.get(), nombre.get())
-            messagebox.showinfo("Éxito", "Usuario agregado")
-            win.destroy()
+            msg = agregarUsuarioBackend(idUsuario.get(), nombre.get())
+
+            if msg is None:
+                messagebox.showinfo("Éxito", "Usuario agregado correctamente.")
+                win.destroy()
+            else:
+                messagebox.showerror("Error", msg)
 
         tk.Button(win, text="Guardar", command=guardar).pack()
 
-    def ventana_prestar_libro(self):
+    def ventanaPrestarLibro(self):
         win = tk.Toplevel()
         win.title("Prestar Libro")
 
         tk.Label(win, text="ID del libro").pack()
-        id_libro = tk.Entry(win)
-        id_libro.pack()
+        idLibro = tk.Entry(win)
+        idLibro.pack()
 
         tk.Label(win, text="ID del usuario").pack()
-        id_usuario = tk.Entry(win)
-        id_usuario.pack()
+        idUsuario = tk.Entry(win)
+        idUsuario.pack()
 
         def prestar():
-            msg = prestar_libro_backend(id_libro.get(), id_usuario.get())
+            msg = prestarLibroBackend(idLibro.get(), idUsuario.get())
             messagebox.showinfo("Resultado", msg)
             win.destroy()
 
         tk.Button(win, text="Prestar", command=prestar).pack()
 
-    def ventana_devolver_libro(self):
+    def ventanaDevolverLibro(self):
         win = tk.Toplevel()
         win.title("Devolver Libro")
 
         tk.Label(win, text="ID del libro").pack()
-        id_libro = tk.Entry(win)
-        id_libro.pack()
+        idLibro = tk.Entry(win)
+        idLibro.pack()
 
         def devolver():
-            msg = devolver_libro_backend(id_libro.get())
+            msg = devolverLibroBackend(idLibro.get())
             messagebox.showinfo("Resultado", msg)
             win.destroy()
 
         tk.Button(win, text="Devolver", command=devolver).pack()
 
-    def ver_historial(self):
-        messagebox.showinfo("Historial", str(historial_prestamos))
+    def verHistorial(self):
+        messagebox.showinfo("Historial", str(historialPrestamos))
 
-    def ver_libros(self):
-        from backend.data_structures import libros
+    def verLibros(self):
+        from backend.dataStructures import libros
 
         if not libros:
             messagebox.showinfo("Libros", "No hay libros registrados.")
@@ -134,7 +142,7 @@ class BibliotecaGUI:
 
         # Mostrar libros
         for libro in libros:
-            estado = "Disponible" if libro["disponible"] else f"Prestado a {libro['usuario_actual']}"
+            estado = "Disponible" if libro["disponible"] else f"Prestado a {libro['usuarioActual']}"
 
             tk.Label(content, text=f"ID: {libro['id']}").pack(anchor="w")
             tk.Label(content, text=f"Título: {libro['titulo']}").pack(anchor="w")
