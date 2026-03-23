@@ -114,7 +114,7 @@ class BibliotecaGUI:
         messagebox.showinfo("Historial", str(historialPrestamos))
 
     def verLibros(self):
-        from backend.dataStructures import libros
+        from backend.dataStructures import libros, listaEspera
 
         if not libros:
             messagebox.showinfo("Libros", "No hay libros registrados.")
@@ -140,12 +140,22 @@ class BibliotecaGUI:
         content = tk.Frame(canvas)
         canvas.create_window((0, 0), window=content, anchor="nw")
 
-        # Mostrar libros
         for libro in libros:
             estado = "Disponible" if libro["disponible"] else f"Prestado a {libro['usuarioActual']}"
 
             tk.Label(content, text=f"ID: {libro['id']}").pack(anchor="w")
             tk.Label(content, text=f"Título: {libro['titulo']}").pack(anchor="w")
             tk.Label(content, text=f"Autor: {libro['autor']}").pack(anchor="w")
-            tk.Label(content, text=f"Estado: {estado}", fg="green" if libro["disponible"] else "red").pack(anchor="w")
-            tk.Label(content, text="-"*40).pack(anchor="w")
+            tk.Label(content, text=f"Estado: {estado}", 
+                    fg="green" if libro["disponible"] else "red").pack(anchor="w")
+
+            esperaLibro = [u for (idL, u) in listaEspera if idL == libro["id"]]
+
+            if esperaLibro:
+                tk.Label(content, text=f"Usuarios en espera ({len(esperaLibro)}):", fg="blue").pack(anchor="w")
+                for usuario in esperaLibro:
+                    tk.Label(content, text=f" - {usuario}").pack(anchor="w")
+            else:
+                tk.Label(content, text="Usuarios en espera: Ninguno", fg="gray").pack(anchor="w")
+
+            tk.Label(content, text="-"*40).pack(anchor="w", pady=5)
